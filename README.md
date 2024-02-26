@@ -1,16 +1,55 @@
-# Projeto: Castrastro de Usuários (user-registration) - NodeJS/Express
+# Projeto: Castrastro de Usuários - NodeJS/Express
 ### 1 - O que é?
 Página web para cadastro de usuários desenvolvido em NodeJS/Express com intuito educacional.
 
 ### 2 - Objetivo
 O principal objetivo desse projeto é sua utilização em containers.
 
-### 3 - Execução
-Para cumprir o objetivo e executar esse projeto:
-1. Crie uma network personalizada utilizando o driver Bridge.
-2. Configure um container do MongoDB na porta 27017 e insira-o na rede personalizada criada no passo anterior.
-3. Crie um Dockerfile para a aplicação em NodeJS expondo a porta 3000 e uma variável MONGODB contendo o nome do container do MongoDB para que haja comunicação. Em seguida inicialize um container para a aplicação na network criada no passo 1.
-4. Para visualizar os dados inseridos no banco, pode ser utilizado um container do Mongo Express.
+### 3 - Como executar
+Para cumprir o objetivo e executar esse projeto
 
-### 4 - Mais Informações
-Para mais detalhes sobre a criação dos dockerfiles e execução do projeto, acompanhe as aulas do curso 'Docker Essencial: Primeiros Passos'.
+#### I - Tecnologias necessárias
+- Git para clonagem do repositório;
+- Docker para a criação e execução dos Contêineres.
+
+#### II - Comandos para criar o ambiente
+- Faça a clonagem deste projeto
+```git
+git clone https://github.com/JhoneRodrigues/user-registration
+```  
+- Dentro do repositório, faça o Build do mongodb.dockerfile para gerar a imagem do DB;
+```cmd
+docker build -t meu-mongodb -f mongodb.dockerfile .
+```
+- Crie/execute o contêiner do MongoDB
+```cmd
+docker run -dit -p 27017:27017 --mount source=mongo-volume,target=/data/db --name mongod meu-mongodb
+```
+- Crie a variavel de ambiente para receber o IP do DB
+```cmd
+export MONGOIP=172.17.0.2
+```
+- Execute o Build do mongo-express.dockerfile
+```cmd
+docker build -t meu-mongo-express -f mongo-express.dockerfile --build-arg MONGO=$MONGOIP .
+```
+- Crie/execute o contêiner do Mongo-express
+```cmd
+docker run -dit -p 8081:8081 --name mongo-express meu-mongo-express
+```
+- Faça o Build da aplicação Node, o arquivo app.dockerfile
+```cmd
+docker build -t meu-app-node -f app.dockerfile --build-arg MONGO=$MONGOIP .
+```
+- Crie/execute o contêiner do App
+```cmd
+docker run -dit -p 3000:3000 --name app meu-app-node
+```
+#### III - Seu ambiente de produção está pronto
+- Acesse http://localhost:3000/ para entrar na aplicação e testar o cadastro de usúario;
+- Acesse http://localhost:8081/ para entrar no Docker-express e vizualizar os dados.
+
+## <b> Vamos nos conectar..!</b><img src="https://github.com/0xAbdulKhalid/0xAbdulKhalid/raw/main/assets/mdImages/handshake.gif" width ="80">
+<a href="https://www.linkedin.com/in/jhonerodrigues/" target="_blank">
+<img src="https://img.shields.io/badge/linkedin:  jhone rodrigues-%2300acee.svg?color=405DE6&style=for-the-badge&logo=linkedin&logoColor=white" alt=linkedin style="margin-bottom: 5px;"/>
+</a>
