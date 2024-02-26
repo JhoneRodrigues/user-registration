@@ -2,7 +2,7 @@
 FROM alpine:3.9
 
 # Instala o MongoDB utilizando o gerenciador de pacotes apk
-RUN apk add --no-cache mongodb-tools
+RUN apk add --no-cache mongodb
 
 # Informa ao Docker que o serviço estará disponível na porta 27017
 EXPOSE 27017
