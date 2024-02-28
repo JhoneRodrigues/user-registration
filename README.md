@@ -21,29 +21,29 @@ git clone https://github.com/JhoneRodrigues/user-registration
 ```cmd
 docker build -t meu-mongodb -f mongodb.dockerfile .
 ```
-- Crie/execute o contêiner do MongoDB
-```cmd
-docker run -dit -p 27017:27017 --mount source=mongo-volume,target=/data/db --name mongod meu-mongodb
-```
-- Crie a variavel de ambiente para receber o IP do DB
-```cmd
-export MONGOIP=172.17.0.2
-```
 - Execute o Build do mongo-express.dockerfile
 ```cmd
-docker build -t meu-mongo-express -f mongo-express.dockerfile --build-arg MONGO=$MONGOIP .
-```
-- Crie/execute o contêiner do Mongo-express
-```cmd
-docker run -dit -p 8081:8081 --name mongo-express meu-mongo-express
+docker build -t meu-mongo-express -f mongo-express.dockerfile .
 ```
 - Faça o Build da aplicação Node, o arquivo app.dockerfile
 ```cmd
-docker build -t meu-app-node -f app.dockerfile --build-arg MONGO=$MONGOIP .
+docker build -t meu-app-node -f app.dockerfile .
 ```
-- Crie/execute o contêiner do App
+- Crie a rede para ter a comunicação entre os contêineres
 ```cmd
-docker run -dit -p 3000:3000 --name app meu-app-node
+docker network create --driver bridge rede-cadastros
+```
+- Crie/execute o contêiner do MongoDB
+```cmd
+docker run -dit --name meu-mongodb --network rede-cadastros --mount source=mongo-volume,target=/data/db meu-mongodb
+```
+- Crie/execute o contêiner do Mongo-express
+```cmd
+docker run -dit --name mongo-express -p 8081:8081 --network rede-cadastros meu-mongo-express
+```
+- Crie/execute o contêiner da aplicação
+```cmd
+docker run -dit --name app -p 3000:3000 --network rede-cadastros meu-app-node
 ```
 #### III - Seu ambiente de produção está pronto
 - Acesse http://localhost:3000/ para entrar na aplicação e testar o cadastro de usúario;
