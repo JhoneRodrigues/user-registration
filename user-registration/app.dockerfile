@@ -4,11 +4,8 @@ FROM node:20.3.0-alpine3.18
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Declaramos uma variavel de argumento, recebendo uma variavel de ambiente do sistema interno
-ARG MONGO=$MONGOIP
-
-# Define uma variável de ambiente MONGODB com o valor da variável de argumento MONGO
-ENV MONGODB=$MONGO
+# Define uma variável de ambiente MONGODB responsavel por se conectar com o MongoDB
+ENV MONGODB=meu-mongodb
 
 # Informa ao Docker que a aplicação dentro do contêiner estará ouvindo na porta 3000
 EXPOSE 3000
